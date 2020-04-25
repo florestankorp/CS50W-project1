@@ -7,6 +7,7 @@ from flask import Flask, g, redirect, render_template, request, session
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 
@@ -18,6 +19,7 @@ if not os.getenv("DATABASE_URL"):
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+TEMPLATES_AUTO_RELOAD = True
 
 # Set up database
 engine = create_engine(os.getenv("DATABASE_URL"))
@@ -34,23 +36,32 @@ def register():
     errors = []
     if request.method == "POST":
         if not request.form.get("username"):
-            errors.append("please provide a username")
+            errors.append("Please provide a username")
+            pass
 
         elif not request.form.get("password"):
-            errors.append("please provide a password")
+            errors.append("Please provide a password")
+            pass
 
         elif request.form.get("password") != request.form.get(
                 "password-confirmation"):
-            errors.append("passwords don't match")
-        else:
+            errors.append("Passwords don't match")
+            pass
+
+        elif not errors:
             username = request.form.get("username")
-            password = request.form.get("password")
-            password_confirmation = request.form.get("password-confirmation")
+            password = generate_password_hash(request.form.get("password"))
 
+            DB.execute(
+                """--sql
+            INSERT INTO users (username, password) VALUES (:username, :password)
+            --endsql""", {
+                    "username": username,
+                    "password": password
+                })
+
+            DB.commit()
             return redirect("/")
-
-        # store form data
-        # navigate
 
     return render_template("register.html", errors=errors)
 
