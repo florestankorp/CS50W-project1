@@ -28,7 +28,49 @@ DB = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
 def index():
+    print(session["user_id"])
     return "Project 1: TODO"
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    session.clear()
+    errors = []
+    if request.method == "POST":
+        if not request.form.get("username"):
+            errors.append("Please provide a username")
+            pass
+
+        elif not request.form.get("password"):
+            errors.append("Please provide a password")
+            pass
+
+        elif not errors:
+            username = request.form.get("username")
+            password = request.form.get("password")
+            user = DB.execute(
+                """--sql
+            SELECT * FROM users WHERE username=:username
+            --endsql""", {
+                    "username": username
+                }).fetchone()
+
+            # check if user exists
+            if user is None:
+                errors.append("User not found")
+                pass
+
+            # check if password is correct
+            elif not check_password_hash(user.password, password):
+                errors.append("Incorrect password")
+                pass
+
+            elif not errors:
+                # Remember which user has logged in
+                session["user_id"] = user.id
+                return redirect("/")
+
+    return render_template("login.html", errors=errors)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -61,7 +103,7 @@ def register():
                 })
 
             DB.commit()
-            return redirect("/")
+            return redirect("/login")
 
     return render_template("register.html", errors=errors)
 
