@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Search
+{% endblock %}
+
+{% block main %}
+<form action="/"
+      method="post">
+    <div class="input-group">
+        <input class="search-box"
+               type="text"
+               name="search"
+               placeholder="Please enter ISBN, title or author">
+        <input class="search-button"
+               type="submit"
+               value="Search books">
+    </div>
+    <ul class="errors">
+        {% for error in errors %}
+        <li>{{error}}</li>
+        {% endfor %}
+    </ul>
+</form>
+<div class="results">
+    {% for work in works %}
+    <div class="book-card">
+        <h3>{{work["best_book"]["title"]}}</h3>
+        <h4>{{work["best_book"]["author"]["name"]}}</h4>
+        <p>{{work["original_publication_year"]["#text"]}} </p>
+        <p>{{work["average_rating"]}}5</p>
+    </div>
+    {% endfor %}
+    {% endblock %}
+</div>

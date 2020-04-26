@@ -4,7 +4,13 @@ body {
 }
 
 form {
-    width: 25%;
+    margin: auto;
+    left: 0;
+    right: 0;
+}
+
+h3, h4, p {
+    margin: 0;
 }
 
 ul {
@@ -21,6 +27,31 @@ input {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+}
+
+.input-group {
+    display: flex;
+}
+
+.search-box {
+    flex: 1;
+    margin-right: 2%;
+}
+
+.search-button {
+    flex: 0;
+}
+
+.results {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.book-card {
+    border: 1px solid black;
+    border: 1px solid black;
+    width: 20%;
+    margin: 15px;
 }
 
 div {

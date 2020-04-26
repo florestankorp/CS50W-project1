@@ -3,7 +3,9 @@ import os
 from secrets import key, secret
 
 import requests
-from flask import Flask, g, redirect, render_template, request, session
+import xmltodict
+from flask import (Flask, g, jsonify, redirect, render_template, request,
+                   session, url_for)
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -26,10 +28,38 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 DB = scoped_session(sessionmaker(bind=engine))
 
 
-@app.route("/")
-def index():
-    print(session["user_id"])
-    return "Project 1: TODO"
+@app.route("/", methods=["GET", "POST"])
+def search():
+    query = ""
+    errors = []
+    # check if there is a logged in user
+    try:
+        ID = session["user_id"]
+        pass
+    except KeyError:
+        return redirect("/login")
+
+    if request.method == "POST":
+        # get and validate form data
+        if not request.form.get("search"):
+            errors.append("Please enter a search term")
+            pass
+        else:
+            # use input to do API call to goodreads
+            query = request.form.get("search")
+            response = requests.get("https://www.goodreads.com/search.xml",
+                                    params={
+                                        "key": key,
+                                        "q": query,
+                                        "search": "all"
+                                    })
+
+            works = (xmltodict.parse(response.content, process_namespaces=True)
+                     ["GoodreadsResponse"]["search"]["results"]["work"])
+
+            return render_template("search.html", errors=errors, works=works)
+
+    return render_template("search.html", errors=errors)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -37,6 +67,7 @@ def login():
     session.clear()
     errors = []
     if request.method == "POST":
+        # get and validate form data
         if not request.form.get("username"):
             errors.append("Please provide a username")
             pass
@@ -45,6 +76,7 @@ def login():
             errors.append("Please provide a password")
             pass
 
+        # proceed if no errors
         elif not errors:
             username = request.form.get("username")
             password = request.form.get("password")
@@ -65,6 +97,7 @@ def login():
                 errors.append("Incorrect password")
                 pass
 
+            # proceed if STILL no errors
             elif not errors:
                 # Remember which user has logged in
                 session["user_id"] = user.id
@@ -77,19 +110,25 @@ def login():
 def register():
     errors = []
     if request.method == "POST":
+        # get and validate form data
+
+        # check if username is provided
         if not request.form.get("username"):
             errors.append("Please provide a username")
             pass
 
+        # check if password is provided
         elif not request.form.get("password"):
             errors.append("Please provide a password")
             pass
 
+        # check if username and password match
         elif request.form.get("password") != request.form.get(
                 "password-confirmation"):
             errors.append("Passwords don't match")
             pass
 
+        # proceed if no errors
         elif not errors:
             username = request.form.get("username")
             password = generate_password_hash(request.form.get("password"))
@@ -106,19 +145,3 @@ def register():
             return redirect("/login")
 
     return render_template("register.html", errors=errors)
-
-
-# {
-#     'books': [{
-#         'id': 29207858,
-#         'isbn': '1632168146',
-#         'isbn13': '9781632168146',
-#         'ratings_count': 1,
-#         'reviews_count': 6,
-#         'text_reviews_count': 0,
-#         'work_ratings_count': 28,
-#         'work_reviews_count': 129,
-#         'work_text_reviews_count': 9,
-#         'average_rating': '  4.14'
-#     }]
-# }
