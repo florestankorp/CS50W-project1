@@ -22,14 +22,21 @@ Search
         {% endfor %}
     </ul>
 </form>
+
+{% if books %}
 <div class="results">
-    {% for work in works %}
-    <div class="book-card">
-        <h3>{{work["best_book"]["title"]}}</h3>
-        <h4>{{work["best_book"]["author"]["name"]}}</h4>
-        <p>{{work["original_publication_year"]["#text"]}} </p>
-        <p>{{work["average_rating"]}}5</p>
-    </div>
+    {% for book in books %}
+    <a class="book-card"
+       href="{{url_for('book', book_id=book.book_id)}}">
+        <p class="title">{{book.title}}</p>
+        <div class="book-info">
+            <div class="book-details">
+                <p>{{book.author}}</p>
+                <p>{{book.year}} </p>
+            </div>
+        </div>
+    </a>
     {% endfor %}
-    {% endblock %}
 </div>
+{% endif %}
+{% endblock %}

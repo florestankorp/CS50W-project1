@@ -17,7 +17,7 @@ DB = scoped_session(sessionmaker(bind=engine))
 def main():
     DB.execute("""--sql
     CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
+        user_id SERIAL PRIMARY KEY,
         username VARCHAR(255),
         password VARCHAR(255)
     )--endsql""")
@@ -25,13 +25,13 @@ def main():
     # name has to be unique so there are no conflicts when inserting author_id into books table
     DB.execute("""--sql
     CREATE TABLE IF NOT EXISTS authors (
-        id SERIAL PRIMARY KEY,
+        author_id SERIAL PRIMARY KEY,
         name VARCHAR(255) UNIQUE
     )--endsql""")
 
     DB.execute("""--sql
     CREATE TABLE IF NOT EXISTS books (
-        id SERIAL PRIMARY KEY,
+        book_id SERIAL PRIMARY KEY,
         isbn VARCHAR(255),
         title VARCHAR(255),
         year VARCHAR(255),
@@ -40,7 +40,7 @@ def main():
 
     DB.execute("""--sql
     CREATE TABLE IF NOT EXISTS reviews (
-        id SERIAL PRIMARY KEY,
+        review_id SERIAL PRIMARY KEY,
         content TEXT,
         user_id INTEGER REFERENCES users,
         book_id INTEGER REFERENCES books
@@ -69,7 +69,7 @@ def main():
         DB.execute(
             """--sql
         INSERT INTO books (isbn, title, year, author_id) VALUES (:isbn, :title, :year, (
-                SELECT id FROM authors WHERE name=:author
+                SELECT author_id FROM authors WHERE name=:author
             )
         ) 
         --endsql""", {

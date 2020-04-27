@@ -44,22 +44,45 @@ def search():
         if not request.form.get("search"):
             errors.append("Please enter a search term")
             pass
-        else:
+        elif not errors:
             # use input to do API call to goodreads
             query = request.form.get("search")
-            response = requests.get("https://www.goodreads.com/search.xml",
-                                    params={
-                                        "key": key,
-                                        "q": query,
-                                        "search": "all"
-                                    })
+            books = DB.execute(
+                """--sql
+            SELECT book_id, isbn, title, year, name as author FROM books 
+            JOIN authors ON books.author_id = authors.author_id 
+            WHERE 
+            isbn LIKE :query OR
+            title LIKE :query OR
+            name LIKE :query
+            --endsql""", {
+                    "query": f'%{query}%'
+                }).fetchall()
 
-            works = (xmltodict.parse(response.content, process_namespaces=True)
-                     ["GoodreadsResponse"]["search"]["results"]["work"])
+            return render_template("search.html", errors=errors, books=books)
 
-            return render_template("search.html", errors=errors, works=works)
+        else:
+            errors.append("Book not found")
+            pass
 
     return render_template("search.html", errors=errors)
+
+
+@app.route("/book/<int:book_id>", methods=["GET", "POST"])
+def book(book_id):
+    book = DB.execute(
+        """--sql
+            SELECT book_id, isbn, title, year, name as author FROM books 
+            JOIN authors ON books.author_id = authors.author_id 
+            WHERE book_id=:book_id
+            --endsql""", {
+            "book_id": book_id
+        }).fetchone()
+
+    if book is None:
+        return redirect("/")
+
+    return render_template("book.html", book=book)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -100,7 +123,7 @@ def login():
             # proceed if STILL no errors
             elif not errors:
                 # Remember which user has logged in
-                session["user_id"] = user.id
+                session["user_id"] = user.user_id
                 return redirect("/")
 
     return render_template("login.html", errors=errors)
