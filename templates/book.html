@@ -1,4 +1,39 @@
-<p>{{book.isbn}}</p>
-<p>{{book.title}}</p>
-<p>{{book.author}}</p>
-<p>{{book.year}}</p>
+{% extends "layout.html" %}
+
+{% block title %}
+Search
+{% endblock %}
+
+{% block main %}
+<div class="results">
+    <div class="book-card">
+        <p class="title">{{book.title}}</p>
+        <div class="book-info">
+            <div class="book-details">
+                <p>{{book.isbn}}</p>
+                <p>{{book.author}}</p>
+                <p>{{book.year}} </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% if reviews %}
+<div class="reviews">
+    {% for review in reviews %}
+    <div>{{review[0]}}</div>
+    {% endfor %}
+</div>
+{% endif %}
+<form action="{{url_for('book', book_id=book.book_id)}}"
+      class="review"
+      method="post">
+    <label for="review">Review: </label>
+    <textarea class="text"
+              cols="86"
+              rows="20"
+              name="review"></textarea>
+
+    <input type="submit"
+           value="Submit">
+</form>
+{% endblock %}

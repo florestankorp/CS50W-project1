@@ -6,24 +6,25 @@ Register
 
 {% block main %}
 <form action="/register"
-      method="post">
-    <div>
-        <label for="username">Email:</label>
-        <input type="email"
-               name="username">
-        <label for="password-input">Password:</label>
-        <input type="password"
-               name="password">
-        <label for="password-input">Confirm Password:</label>
-        <input type="password"
-               name="password-confirmation">
-        <input type="submit"
-               value="Register">
-        <ul class="errors">
-            {% for error in errors %}
-            <li>{{error}}</li>
-            {% endfor %}
-        </ul>
-    </div>
+      method="post"
+      class="register">
+       <div>
+              <label for="username">Email:</label>
+              <input type="email"
+                     name="username">
+              <label for="password-input">Password:</label>
+              <input type="password"
+                     name="password">
+              <label for="password-input">Confirm Password:</label>
+              <input type="password"
+                     name="password-confirmation">
+              <input type="submit"
+                     value="Register">
+              <ul class="errors">
+                     {% for error in errors %}
+                     <li>{{error}}</li>
+                     {% endfor %}
+              </ul>
+       </div>
 </form>
 {% endblock %}

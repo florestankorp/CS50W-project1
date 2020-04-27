@@ -70,19 +70,58 @@ def search():
 
 @app.route("/book/<int:book_id>", methods=["GET", "POST"])
 def book(book_id):
+    errors = []
+    try:
+        ID = session["user_id"]
+        pass
+    except KeyError:
+        return redirect("/login")
+
+    if not book_id:
+        return redirect("/")
+
     book = DB.execute(
         """--sql
-            SELECT book_id, isbn, title, year, name as author FROM books 
-            JOIN authors ON books.author_id = authors.author_id 
+            SELECT book_id, isbn, title, year, name AS author FROM books
+            JOIN authors USING(author_id)
             WHERE book_id=:book_id
             --endsql""", {
             "book_id": book_id
         }).fetchone()
 
+    reviews = DB.execute(
+        """--sql
+            SELECT content FROM reviews
+            WHERE book_id=:book_id
+            --endsql""", {
+            "book_id": book_id
+        }).fetchall()
+
     if book is None:
         return redirect("/")
 
-    return render_template("book.html", book=book)
+    if request.method == "POST":
+        # get and validate form data
+        # other validations?
+        if not request.form.get("review"):
+            errors.append("Please provide review")
+            pass
+        elif not errors:
+            review_content = request.form.get("review")
+            print(review_content)
+            DB.execute(
+                """--sql
+            INSERT INTO reviews (user_id, book_id, content) VALUES (:user_id, :book_id, :content)
+            --endsql""", {
+                    "user_id": ID,
+                    "book_id": book_id,
+                    "content": review_content
+                })
+
+            DB.commit()
+            return redirect(url_for('book', book_id=book_id))
+
+    return render_template("book.html", book=book, reviews=reviews)
 
 
 @app.route("/login", methods=["GET", "POST"])
