@@ -42,6 +42,7 @@ def main():
     CREATE TABLE IF NOT EXISTS reviews (
         review_id SERIAL PRIMARY KEY,
         content TEXT,
+        rating INTEGER,
         user_id INTEGER REFERENCES users,
         book_id INTEGER REFERENCES books
     )--endsql""")

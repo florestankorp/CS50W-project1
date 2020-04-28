@@ -91,11 +91,17 @@ def book(book_id):
 
     reviews = DB.execute(
         """--sql
-            SELECT content FROM reviews
+            SELECT * FROM reviews
             WHERE book_id=:book_id
             --endsql""", {
             "book_id": book_id
         }).fetchall()
+
+    has_user_placed_review = []
+    for review in reviews:
+        has_user_placed_review.append(review.user_id == ID)
+
+    can_user_place_review = True not in has_user_placed_review
 
     if book is None:
         return redirect("/")
@@ -106,22 +112,29 @@ def book(book_id):
         if not request.form.get("review"):
             errors.append("Please provide review")
             pass
+        if not request.form.get("rating"):
+            errors.append("Please provide rating")
+            pass
         elif not errors:
-            review_content = request.form.get("review")
-            print(review_content)
+            content = request.form.get("review")
+            rating = request.form.get("rating")
             DB.execute(
                 """--sql
-            INSERT INTO reviews (user_id, book_id, content) VALUES (:user_id, :book_id, :content)
+            INSERT INTO reviews (user_id, book_id, content, rating) VALUES (:user_id, :book_id, :content, :rating)
             --endsql""", {
                     "user_id": ID,
                     "book_id": book_id,
-                    "content": review_content
+                    "content": content,
+                    "rating": rating
                 })
 
             DB.commit()
             return redirect(url_for('book', book_id=book_id))
 
-    return render_template("book.html", book=book, reviews=reviews)
+    return render_template("book.html",
+                           book=book,
+                           reviews=reviews,
+                           can_user_place_review=can_user_place_review)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -195,15 +208,27 @@ def register():
             username = request.form.get("username")
             password = generate_password_hash(request.form.get("password"))
 
-            DB.execute(
+            user = DB.execute(
                 """--sql
-            INSERT INTO users (username, password) VALUES (:username, :password)
+            SELECT * FROM users WHERE username=:username
             --endsql""", {
                     "username": username,
-                    "password": password
-                })
+                }).fetchone()
 
-            DB.commit()
-            return redirect("/login")
+            # check if user exists
+            if user is None:
+                DB.execute(
+                    """--sql
+                INSERT INTO users (username, password) VALUES (:username, :password)
+                --endsql""", {
+                        "username": username,
+                        "password": password
+                    })
+
+                DB.commit()
+                return redirect("/login")
+            else:
+                errors.append("User already exists")
+                pass
 
     return render_template("register.html", errors=errors)
