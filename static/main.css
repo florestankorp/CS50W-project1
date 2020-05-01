@@ -1,5 +1,8 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
+    /* background-image: url("pbhH.gif") repeat-y 100% 100% fixed;
+    background-position: center;
+    background-size: cover; */
 }
 
 form[class="login"], form[class="register"] {

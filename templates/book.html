@@ -17,14 +17,23 @@ Search
     </div>
   </div>
 </div>
-{% if reviews %}
+
 <div class="reviews">
+  {% if goodreads_reviews %}
+  <p>Average rating: {{goodreads_reviews.books[0].average_rating}}</p>
+  <p>Amount of ratings: {{goodreads_reviews.books[0].reviews_count}}</p>
+  {% endif %}
+
+  {% if reviews %}
   {% for review in reviews %}
-  <p>{{review.content}}</p>
-  <p>{{review.rating}}</p>
+  <div class="review">
+    <p>Review by:<span>{{review.username}}</span></p>
+    <p>Stars: <span>{{review.rating}}</p>
+    <p>{{review.content}}</p></span>
+  </div>
   {% endfor %}
+  {% endif %}
 </div>
-{% endif %}
 {% if can_user_place_review %}
 <form action="{{url_for('book', book_id=book.book_id)}}"
       class=""

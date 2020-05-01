@@ -4,12 +4,17 @@ from secrets import key, secret
 
 import requests
 import xmltodict
-from flask import (Flask, g, jsonify, redirect, render_template, request,
-                   session, url_for)
+from flask import (Flask, g, jsonify, make_response, redirect, render_template,
+                   request, session, url_for)
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
+"""
+TODO:
+* abstract login to own methid
+* abstract error handler to own method
+"""
 
 app = Flask(__name__)
 
@@ -68,6 +73,45 @@ def search():
     return render_template("search.html", errors=errors)
 
 
+@app.route("/api/<isbn>", methods=["GET"])
+def api(isbn):
+    errors = []
+    try:
+        ID = session["user_id"]
+        pass
+    except KeyError:
+        return redirect("/login")
+
+    book = DB.execute(
+        """--sql
+            SELECT 
+            title, 
+            name AS author,
+            year, 
+            isbn, 
+            COUNT(review_id) AS review_count, 
+            ROUND(AVG(rating)::numeric,2) AS average_score 
+            FROM books
+            JOIN authors USING(author_id)
+            JOIN reviews USING(book_id)
+            WHERE isbn=:isbn
+            GROUP BY authors.name, book_id
+            --endsql""", {
+            "isbn": isbn
+        }).fetchone()
+
+    if book is None:
+        return app.response_class(response="Book not found",
+                                  status=404,
+                                  mimetype='application/json')
+
+    else:
+
+        return app.response_class(response=json.dumps(dict(book)),
+                                  status=200,
+                                  mimetype='application/json')
+
+
 @app.route("/book/<int:book_id>", methods=["GET", "POST"])
 def book(book_id):
     errors = []
@@ -92,6 +136,7 @@ def book(book_id):
     reviews = DB.execute(
         """--sql
             SELECT * FROM reviews
+            JOIN users USING(user_id)
             WHERE book_id=:book_id
             --endsql""", {
             "book_id": book_id
@@ -102,6 +147,14 @@ def book(book_id):
         has_user_placed_review.append(review.user_id == ID)
 
     can_user_place_review = True not in has_user_placed_review
+
+    # api call
+    goodreads_reviews = requests.get(
+        "https://www.goodreads.com/book/review_counts.json",
+        params={
+            "key": key,
+            "isbns": book.isbn
+        }).json()
 
     if book is None:
         return redirect("/")
@@ -134,6 +187,7 @@ def book(book_id):
     return render_template("book.html",
                            book=book,
                            reviews=reviews,
+                           goodreads_reviews=goodreads_reviews,
                            can_user_place_review=can_user_place_review)
 
 
