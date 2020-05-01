@@ -6,30 +6,31 @@ Search
 
 {% block main %}
 <div class="results">
-  <div class="book-card">
+  <div class="book-card rounded-corners">
     <p><span class="title">{{book.title}} </span><span>({{book.year}})</span></p>
     <div class="book-info">
       <div class="book-details">
         <p>{{book.author}}</p>
+        <p class="isbn"><span class="bold">ISBN: </span>{{book.isbn}}</p>
+        {% if goodreads_reviews %}
 
-        <p>ISBN: {{book.isbn}}</p>
+        <p>Average Rating:
+          <span class="bold">{{goodreads_reviews.books[0].average_rating}}</span> from
+          <span class="bold">{{goodreads_reviews.books[0].reviews_count}}</span>
+          {% endif %}
+          users
+        </p>
       </div>
     </div>
   </div>
 </div>
 
 <div class="reviews">
-  {% if goodreads_reviews %}
-  <div class="rating">
-    <p>Average rating: {{goodreads_reviews.books[0].average_rating}}</p>
-    <p>Amount of ratings: {{goodreads_reviews.books[0].reviews_count}}</p>
-  </div>
 
-  {% endif %}
 
   {% if reviews %}
   {% for review in reviews %}
-  <div class="user-review">
+  <div class="user-review rounded-corners">
     <p class="user-name">{{review.username}}
       <p>
         {% for n in range(review.rating) %}
@@ -48,17 +49,28 @@ Search
       method="post">
   <div>
     <h4>Leave your rating and review</h4>
-    <label for="rating">Rating: </label>
-    <select name="rating">
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-    </select>
+    <ul class="form">
+      <li class="rating">
+        <input type="radio"
+               name="rating"
+               value="1" /><span></span>
+        <input type="radio"
+               name="rating"
+               value="2" /><span></span>
+        <input type="radio"
+               name="rating"
+               value="3" /><span></span>
+        <input type="radio"
+               name="rating"
+               value="4" /><span></span>
+        <input type="radio"
+               name="rating"
+               value="5" /><span></span>
+      </li>
+    </ul>
   </div>
   <div>
-    <textarea class="text"
+    <textarea class="rounded-corners"
               cols="86"
               rows="20"
               name="review"></textarea>

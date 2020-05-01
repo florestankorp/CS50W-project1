@@ -1,14 +1,26 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
-    /* background-image: url("pbhH.gif") repeat-y 100% 100% fixed;
-    background-position: center;
-    background-size: cover; */
+}
+
+h3, p {
+    margin: 0;
+}
+
+h4 {
+    margin: 0 0 10px 0;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+form {
+    margin: 0;
+    margin-bottom: 15px;
 }
 
 .user-review {
-    border: 1px solid #ccc;
-    border-radius: 5px;
     padding: 10px;
 }
 
@@ -27,22 +39,27 @@ body {
     font-size: 25px;
 }
 
-.rating {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
+.rating input[type="radio"] {
+    position: absolute;
+    cursor: pointer;
+    width: 17px;
+}
+
+.rating span {
+    width: 24px;
+    height: 16px;
+    line-height: 16px;
+    padding: 1px 22px 1px 0;
 }
 
 textarea {
     width: 100%;
-    border-radius: 5px;
     box-sizing: border-box;
     resize: none;
 }
 
-h3, h4, p {
-    margin: 0;
+.isbn {
+    margin-top: 5px;
 }
 
 ul {
@@ -51,27 +68,12 @@ ul {
     color: crimson;
 }
 
-img {
-    border: 1px solid #CCC
-}
-
-input {
+.input-field {
     display: inline-block;
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
     box-sizing: border-box;
-}
-
-.search-box {
-    flex: 1;
-    margin-right: 2%;
-}
-
-.search-button {
-    flex: 0;
 }
 
 .results {
@@ -82,8 +84,6 @@ input {
 }
 
 .book-card {
-    border: 1px solid #ccc;
-    border-radius: 5px;
     margin-bottom: 10px;
     padding: 10px;
 }
@@ -119,4 +119,9 @@ input[type=submit] {
 
 input[type=submit]:hover {
     background-color: #45a049;
+}
+
+.rounded-corners {
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }

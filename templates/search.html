@@ -8,7 +8,7 @@ Search
 <form action="/"
       method="post">
     <div class="input-group">
-        <input class="search-box"
+        <input class="input-field rounded-corners"
                type="text"
                name="search"
                placeholder="Please enter ISBN, title or author">
@@ -26,7 +26,7 @@ Search
 {% if books %}
 <div class="results">
     {% for book in books %}
-    <a class="book-card"
+    <a class="book-card rounded-corners"
        href="{{url_for('book', book_id=book.book_id)}}">
         <p><span class="title">{{book.title}} </span><span>({{book.year}})</span></p>
         <div class="book-info">
