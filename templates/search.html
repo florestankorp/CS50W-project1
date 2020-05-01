@@ -28,11 +28,10 @@ Search
     {% for book in books %}
     <a class="book-card"
        href="{{url_for('book', book_id=book.book_id)}}">
-        <p class="title">{{book.title}}</p>
+        <p><span class="title">{{book.title}} </span><span>({{book.year}})</span></p>
         <div class="book-info">
             <div class="book-details">
                 <p>{{book.author}}</p>
-                <p>{{book.year}} </p>
             </div>
         </div>
     </a>

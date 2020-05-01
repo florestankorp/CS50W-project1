@@ -1,15 +1,44 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
     /* background-image: url("pbhH.gif") repeat-y 100% 100% fixed;
     background-position: center;
     background-size: cover; */
 }
 
-form[class="login"], form[class="register"] {
-    margin: auto;
-    left: 0;
-    right: 0;
+.user-review {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.user-name {
+    display: flex;
+    font-weight: bold;
+}
+
+.container {
     width: 25%;
+}
+
+.stars {
+    margin-top: 5px;
+    color: crimson;
+    font-size: 25px;
+}
+
+.rating {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+textarea {
+    width: 100%;
+    border-radius: 5px;
+    box-sizing: border-box;
+    resize: none;
 }
 
 h3, h4, p {
@@ -19,7 +48,7 @@ h3, h4, p {
 ul {
     padding: 0;
     list-style: none;
-    color: red;
+    color: crimson;
 }
 
 img {
@@ -32,12 +61,8 @@ input {
     padding: 12px 20px;
     margin: 8px 0;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 5px;
     box-sizing: border-box;
-}
-
-.input-group {
-    display: flex;
 }
 
 .search-box {
@@ -52,16 +77,13 @@ input {
 .results {
     display: flex;
     flex-wrap: wrap;
-    flex-direction: row;
-    /*add media query for this*/
+    flex-direction: column;
     border-radius: 5px;
 }
 
 .book-card {
     border: 1px solid #ccc;
-    width: 25%;
     border-radius: 5px;
-    margin-right: 10px;
     margin-bottom: 10px;
     padding: 10px;
 }
@@ -91,7 +113,7 @@ input[type=submit] {
     padding: 14px 20px;
     margin: 8px 0;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
 }
 

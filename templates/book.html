@@ -7,12 +7,12 @@ Search
 {% block main %}
 <div class="results">
   <div class="book-card">
-    <p class="title">{{book.title}}</p>
+    <p><span class="title">{{book.title}} </span><span>({{book.year}})</span></p>
     <div class="book-info">
       <div class="book-details">
-        <p>{{book.isbn}}</p>
         <p>{{book.author}}</p>
-        <p>{{book.year}} </p>
+
+        <p>ISBN: {{book.isbn}}</p>
       </div>
     </div>
   </div>
@@ -20,16 +20,24 @@ Search
 
 <div class="reviews">
   {% if goodreads_reviews %}
-  <p>Average rating: {{goodreads_reviews.books[0].average_rating}}</p>
-  <p>Amount of ratings: {{goodreads_reviews.books[0].reviews_count}}</p>
+  <div class="rating">
+    <p>Average rating: {{goodreads_reviews.books[0].average_rating}}</p>
+    <p>Amount of ratings: {{goodreads_reviews.books[0].reviews_count}}</p>
+  </div>
+
   {% endif %}
 
   {% if reviews %}
   {% for review in reviews %}
-  <div class="review">
-    <p>Review by:<span>{{review.username}}</span></p>
-    <p>Stars: <span>{{review.rating}}</p>
-    <p>{{review.content}}</p></span>
+  <div class="user-review">
+    <p class="user-name">{{review.username}}
+      <p>
+        {% for n in range(review.rating) %}
+        <span class="stars">*</span>
+        {% endfor %}
+      </p>
+    </p>
+    <p class="review-content">{{review.content}}</p></span>
   </div>
   {% endfor %}
   {% endif %}
@@ -38,21 +46,25 @@ Search
 <form action="{{url_for('book', book_id=book.book_id)}}"
       class=""
       method="post">
-  <label for="rating">Rating: </label>
-  <select name="rating">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-  </select>
-  <label for="review">Review: </label>
-  <textarea class="text"
-            cols="86"
-            rows="20"
-            name="review"></textarea>
-  <input type="submit"
-         value="Submit">
+  <div>
+    <h4>Leave your rating and review</h4>
+    <label for="rating">Rating: </label>
+    <select name="rating">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+  </div>
+  <div>
+    <textarea class="text"
+              cols="86"
+              rows="20"
+              name="review"></textarea>
+    <input type="submit"
+           value="Submit">
+  </div>
 </form>
 {% endif %}
 {% endblock %}
