@@ -4,8 +4,8 @@ from secrets import key, secret
 
 import requests
 import xmltodict
-from flask import (Flask, g, jsonify, make_response, redirect, render_template,
-                   request, session, url_for)
+from flask import (Flask, Response, g, jsonify, make_response, redirect,
+                   render_template, request, session, url_for)
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -89,7 +89,7 @@ def api(isbn):
             name AS author,
             year, 
             isbn, 
-            COUNT(review_id) AS review_count, 
+            COUNT(review_id) AS review_count,
             ROUND(AVG(rating)::numeric,2) AS average_score 
             FROM books
             JOIN authors USING(author_id)
@@ -105,11 +105,7 @@ def api(isbn):
                                   status=404,
                                   mimetype='application/json')
 
-    else:
-
-        return app.response_class(response=json.dumps(dict(book)),
-                                  status=200,
-                                  mimetype='application/json')
+    return jsonify(dict(book))
 
 
 @app.route("/book/<int:book_id>", methods=["GET", "POST"])
