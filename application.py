@@ -187,6 +187,12 @@ def book(book_id):
                            can_user_place_review=can_user_place_review)
 
 
+@app.route("/logout", methods=["GET", "POST"])
+def logout():
+    session.clear()
+    return redirect("/login")
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     session.clear()
