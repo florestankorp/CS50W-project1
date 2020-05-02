@@ -10,11 +10,6 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
-"""
-TODO:
-* abstract login to own methid
-* abstract error handler to own method
-"""
 
 app = Flask(__name__)
 
@@ -76,12 +71,15 @@ def search():
 @app.route("/api/<isbn>", methods=["GET"])
 def api(isbn):
     errors = []
+
+    # check if user is logged in
     try:
         ID = session["user_id"]
         pass
     except KeyError:
         return redirect("/login")
 
+    # get book from database based on isbn and return JSON response
     book = DB.execute(
         """--sql
             SELECT 
@@ -111,6 +109,7 @@ def api(isbn):
 @app.route("/book/<int:book_id>", methods=["GET", "POST"])
 def book(book_id):
     errors = []
+    # check if user is logged in
     try:
         ID = session["user_id"]
         pass
@@ -138,6 +137,7 @@ def book(book_id):
             "book_id": book_id
         }).fetchall()
 
+    # check if user has already reviewed book, if so he can't review again
     has_user_placed_review = []
     for review in reviews:
         has_user_placed_review.append(review.user_id == ID)
@@ -156,17 +156,22 @@ def book(book_id):
         return redirect("/")
 
     if request.method == "POST":
+
         # get and validate form data
-        # other validations?
         if not request.form.get("review"):
             errors.append("Please provide review")
             pass
+
         if not request.form.get("rating"):
             errors.append("Please provide rating")
             pass
+
+        # proceed if no errors
         elif not errors:
             content = request.form.get("review")
             rating = request.form.get("rating")
+
+            # save rating
             DB.execute(
                 """--sql
             INSERT INTO reviews (user_id, book_id, content, rating) VALUES (:user_id, :book_id, :content, :rating)
