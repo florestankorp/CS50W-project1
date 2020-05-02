@@ -8,31 +8,31 @@ Register
 <form action="/register"
       method="post"
       class="register">
-       <div class="user-form">
-              <label for="username">Email:</label>
-              <input type="email"
-                     name="username"
-                     class="input-field call-to-action rounded-corners">
-              <label for="password-input">Password:</label>
-              <input type="password"
-                     name="password"
-                     class="input-field call-to-action rounded-corners">
-              <label for="password-input">Confirm Password:</label>
-              <input type="password"
-                     name="password-confirmation"
-                     class="input-field call-to-action rounded-corners">
-              <input type="submit"
-                     value="Register">
-              <ul class="errors">
-                     {% for error in errors %}
-                     <li>{{error}}</li>
-                     {% endfor %}
-              </ul>
-       </div>
-       <div>
-              <p>Already have an account?</p>
-              <a class="route-link"
-                 href="{{ url_for('login') }}">Log in</a>
-       </div>
+    <div class="user-form">
+        <label for="username">Email:</label>
+        <input type="email"
+               name="username"
+               class="input-field call-to-action rounded-corners">
+        <label for="password-input">Password:</label>
+        <input type="password"
+               name="password"
+               class="input-field call-to-action rounded-corners">
+        <label for="password-input">Confirm Password:</label>
+        <input type="password"
+               name="password-confirmation"
+               class="input-field call-to-action rounded-corners">
+        <input type="submit"
+               value="Register">
+        <ul class="errors">
+            {% for error in errors %}
+            <li>{{error}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <p>Already have an account?</p>
+        <a class="route-link"
+           href="{{ url_for('login') }}">Log in</a>
+    </div>
 </form>
 {% endblock %}

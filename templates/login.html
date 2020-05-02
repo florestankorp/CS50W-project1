@@ -8,28 +8,28 @@ Login
 <form action="/login"
       method="post"
       class="login">
-       <div>
-              <label for="username">Username:</label>
-              <input type="text"
-                     name="username"
-                     class="input-field rounded-corners">
-              <label for="password-input">Password:</label>
-              <input type="password"
-                     name="password"
-                     class="input-field rounded-corners">
-              <input class="call-to-action"
-                     type="submit"
-                     value="Login">
-              <ul class="errors">
-                     {% for error in errors %}
-                     <li>{{error}}</li>
-                     {% endfor %}
-              </ul>
-       </div>
-       <div>
-              <p>Don't have an account yet?</p>
-              <a class="route-link"
-                 href="{{ url_for('register') }}">Register</a>
-       </div>
+    <div>
+        <label for="username">Username:</label>
+        <input type="text"
+               name="username"
+               class="input-field rounded-corners">
+        <label for="password-input">Password:</label>
+        <input type="password"
+               name="password"
+               class="input-field rounded-corners">
+        <input class="call-to-action"
+               type="submit"
+               value="Login">
+        <ul class="errors">
+            {% for error in errors %}
+            <li>{{error}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <p>Don't have an account yet?</p>
+        <a class="route-link"
+           href="{{ url_for('register') }}">Register</a>
+    </div>
 </form>
 {% endblock %}

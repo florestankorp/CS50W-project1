@@ -6,77 +6,77 @@ Search
 
 {% block main %}
 <div class="results">
-  <div class="book-card rounded-corners">
-    <p><span class="title">{{book.title}} </span><span>({{book.year}})</span></p>
-    <div class="book-info">
-      <div class="book-details">
-        <p>{{book.author}}</p>
-        <p class="isbn"><span class="bold">ISBN: </span>{{book.isbn}}</p>
-        {% if goodreads_reviews %}
+    <div class="book-card rounded-corners">
+        <p><span class="title">{{book.title}} </span><span>({{book.year}})</span></p>
+        <div class="book-info">
+            <div class="book-details">
+                <p>{{book.author}}</p>
+                <p class="isbn"><span class="bold">ISBN: </span>{{book.isbn}}</p>
+                {% if goodreads_reviews %}
 
-        <p>Average Rating:
-          <span class="bold">{{goodreads_reviews.books[0].average_rating}}</span> from
-          <span class="bold">{{goodreads_reviews.books[0].reviews_count}}</span>
-          {% endif %}
-          users
-        </p>
-      </div>
+                <p>Average Rating:
+                    <span class="bold">{{goodreads_reviews.books[0].average_rating}}</span> from
+                    <span class="bold">{{goodreads_reviews.books[0].reviews_count}}</span>
+                    {% endif %}
+                    users
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div class="reviews">
 
 
-  {% if reviews %}
-  {% for review in reviews %}
-  <div class="user-review rounded-corners">
-    <p class="user-name">{{review.username}}
-      <p>
-        {% for n in range(review.rating) %}
-        <span class="stars">*</span>
-        {% endfor %}
-      </p>
-    </p>
-    <p class="review-content">{{review.content}}</p></span>
-  </div>
-  {% endfor %}
-  {% endif %}
+    {% if reviews %}
+    {% for review in reviews %}
+    <div class="user-review rounded-corners">
+        <p class="user-name">{{review.username}}
+            <p>
+                {% for n in range(review.rating) %}
+                <span class="stars">*</span>
+                {% endfor %}
+            </p>
+        </p>
+        <p class="review-content">{{review.content}}</p></span>
+    </div>
+    {% endfor %}
+    {% endif %}
 </div>
 {% if can_user_place_review %}
 <form action="{{url_for('book', book_id=book.book_id)}}"
       class=""
       method="post">
-  <div>
-    <h4>Leave your rating and review</h4>
-    <ul class="form">
-      <li class="rating">
-        <input type="radio"
-               name="rating"
-               value="1" /><span></span>
-        <input type="radio"
-               name="rating"
-               value="2" /><span></span>
-        <input type="radio"
-               name="rating"
-               value="3" /><span></span>
-        <input type="radio"
-               name="rating"
-               value="4" /><span></span>
-        <input type="radio"
-               name="rating"
-               value="5" /><span></span>
-      </li>
-    </ul>
-  </div>
-  <div>
-    <textarea class="rounded-corners"
-              cols="86"
-              rows="20"
-              name="review"></textarea>
-    <input type="submit"
-           value="Submit">
-  </div>
+    <div>
+        <h4>Leave your rating and review</h4>
+        <ul class="form">
+            <li class="rating">
+                <input type="radio"
+                       name="rating"
+                       value="1" /><span></span>
+                <input type="radio"
+                       name="rating"
+                       value="2" /><span></span>
+                <input type="radio"
+                       name="rating"
+                       value="3" /><span></span>
+                <input type="radio"
+                       name="rating"
+                       value="4" /><span></span>
+                <input type="radio"
+                       name="rating"
+                       value="5" /><span></span>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <textarea class="rounded-corners"
+                  cols="86"
+                  rows="20"
+                  name="review"></textarea>
+        <input type="submit"
+               value="Submit">
+    </div>
 </form>
 {% endif %}
 {% endblock %}
