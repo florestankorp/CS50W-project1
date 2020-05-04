@@ -3,7 +3,7 @@ import os
 from secrets import key, secret
 
 import requests
-import xmltodict
+
 from flask import (Flask, Response, g, jsonify, make_response, redirect,
                    render_template, request, session, url_for)
 from flask_session import Session
@@ -32,6 +32,7 @@ DB = scoped_session(sessionmaker(bind=engine))
 def search():
     query = ""
     errors = []
+
     # check if there is a logged in user
     try:
         ID = session["user_id"]
@@ -47,16 +48,17 @@ def search():
         elif not errors:
             # use input to do API call to goodreads
             query = request.form.get("search")
+            formatted_query = f'%{query.lower()}%'
             books = DB.execute(
                 """--sql
             SELECT book_id, isbn, title, year, name as author FROM books 
             JOIN authors ON books.author_id = authors.author_id 
             WHERE 
-            isbn LIKE :query OR
-            title LIKE :query OR
-            name LIKE :query
+            LOWER(isbn) LIKE :query OR
+            LOWER(title) LIKE :query OR
+            LOWER(name) LIKE :query
             --endsql""", {
-                    "query": f'%{query}%'
+                    "query": formatted_query
                 }).fetchall()
 
             return render_template("search.html", errors=errors, books=books)
@@ -82,13 +84,9 @@ def api(isbn):
     # get book from database based on isbn and return JSON response
     book = DB.execute(
         """--sql
-            SELECT 
-            title, 
-            name AS author,
-            year, 
-            isbn, 
-            COUNT(review_id) AS review_count,
-            ROUND(AVG(rating)::numeric,2) AS average_score 
+            SELECT title, name AS author,year, isbn, 
+                COUNT(review_id) AS review_count,
+                ROUND(AVG(rating)::numeric,2) AS average_score 
             FROM books
             JOIN authors USING(author_id)
             JOIN reviews USING(book_id)
@@ -137,21 +135,6 @@ def book(book_id):
             "book_id": book_id
         }).fetchall()
 
-    # check if user has already reviewed book, if so he can't review again
-    has_user_placed_review = []
-    for review in reviews:
-        has_user_placed_review.append(review.user_id == ID)
-
-    can_user_place_review = True not in has_user_placed_review
-
-    # api call
-    goodreads_reviews = requests.get(
-        "https://www.goodreads.com/book/review_counts.json",
-        params={
-            "key": key,
-            "isbns": book.isbn
-        }).json()
-
     if book is None:
         return redirect("/")
 
@@ -184,8 +167,23 @@ def book(book_id):
 
             DB.commit()
             return redirect(url_for('book', book_id=book_id))
+    # check if user has already reviewed book, if so he can't review again
+    has_user_placed_review = []
+    for review in reviews:
+        has_user_placed_review.append(review.user_id == ID)
+
+    can_user_place_review = True not in has_user_placed_review
+
+    # api call
+    goodreads_reviews = requests.get(
+        "https://www.goodreads.com/book/review_counts.json",
+        params={
+            "key": key,
+            "isbns": book.isbn
+        }).json()
 
     return render_template("book.html",
+                           errors=errors,
                            book=book,
                            reviews=reviews,
                            goodreads_reviews=goodreads_reviews,

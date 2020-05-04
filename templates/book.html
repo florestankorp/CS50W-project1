@@ -77,6 +77,11 @@ Search
         <input type="submit"
                value="Submit">
     </div>
+    <ul class="errors">
+        {% for error in errors %}
+        <li>{{error}}</li>
+        {% endfor %}
+    </ul>
 </form>
 {% endif %}
 {% endblock %}
