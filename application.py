@@ -50,12 +50,18 @@ def search():
             formatted_query = f'%{query.lower()}%'
             books = DB.execute(
                 """--sql
-            SELECT book_id, isbn, title, year, name as author FROM books 
-            JOIN authors ON books.author_id = authors.author_id 
-            WHERE 
-            LOWER(isbn) LIKE :query OR
-            LOWER(title) LIKE :query OR
-            LOWER(name) LIKE :query
+                select
+                    book_id,
+                    isbn,
+                    title,
+                    year,
+                    name as author
+                from books
+                join authors using(author_id)
+                where
+                    lower(isbn) like :query
+                    or lower(title) like :query
+                    or lower(name) like :query
             --endsql""", {
                     "query": formatted_query
                 }).fetchall()
@@ -83,14 +89,20 @@ def api(isbn):
     # get book from database based on isbn and return JSON response
     book = DB.execute(
         """--sql
-            SELECT title, name AS author,year, isbn, 
-                COUNT(review_id) AS review_count,
-                ROUND(AVG(rating)::numeric,2) AS average_score 
-            FROM books
-            JOIN authors USING(author_id)
-            JOIN reviews USING(book_id)
-            WHERE isbn=:isbn
-            GROUP BY authors.name, book_id
+        select
+            title,
+            name as author,
+            year,
+            isbn,
+            count(review_id) as review_count,
+            round(avg(rating)::numeric, 2) as average_score
+        from books
+        left join authors using(author_id)
+        left join reviews using(book_id)
+        where isbn =:isbn
+        group by
+            authors.name,
+            book_id
             --endsql""", {
             "isbn": isbn
         }).fetchone()
@@ -118,18 +130,24 @@ def book(book_id):
 
     book = DB.execute(
         """--sql
-            SELECT book_id, isbn, title, year, name AS author FROM books
-            JOIN authors USING(author_id)
-            WHERE book_id=:book_id
+        select
+            book_id,
+            isbn,
+            title,
+            year,
+            name as author
+        from books
+        join authors using(author_id)
+        where book_id =:book_id
             --endsql""", {
             "book_id": book_id
         }).fetchone()
 
     reviews = DB.execute(
         """--sql
-            SELECT * FROM reviews
-            JOIN users USING(user_id)
-            WHERE book_id=:book_id
+        select * from reviews 
+        join users using(user_id)
+        where book_id =:book_id
             --endsql""", {
             "book_id": book_id
         }).fetchall()
@@ -156,7 +174,16 @@ def book(book_id):
             # save rating
             DB.execute(
                 """--sql
-            INSERT INTO reviews (user_id, book_id, content, rating) VALUES (:user_id, :book_id, :content, :rating)
+                insert
+                    into
+                    reviews (user_id,
+                    book_id,
+                    content,
+                    rating)
+                values (:user_id,
+                :book_id,
+                :content,
+                :rating)
             --endsql""", {
                     "user_id": ID,
                     "book_id": book_id,
@@ -215,7 +242,7 @@ def login():
             password = request.form.get("password")
             user = DB.execute(
                 """--sql
-            SELECT * FROM users WHERE username=:username
+                select * from users where username =:username
             --endsql""", {
                     "username": username
                 }).fetchone()
@@ -268,7 +295,7 @@ def register():
 
             user = DB.execute(
                 """--sql
-            SELECT * FROM users WHERE username=:username
+                select * from users where username =:username
             --endsql""", {
                     "username": username,
                 }).fetchone()
@@ -277,7 +304,8 @@ def register():
             if user is None:
                 DB.execute(
                     """--sql
-                INSERT INTO users (username, password) VALUES (:username, :password)
+                    insert into users (username, password)
+                    values (:username, :password)
                 --endsql""", {
                         "username": username,
                         "password": password
