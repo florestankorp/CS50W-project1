@@ -1,0 +1,33 @@
+Hello everybody
+
+This is Florestan, coming to you from the Netherlands!
+This video goes alongside the second assignment for Harvard's CS50W: Introduction to Web Programming with Python and Javascript
+
+In this assignment I was asked to make a book review application using Flask, a Python micro-framework that helps with RESTful handling of data, application routing and template binding for rendering data from two sources:
+
+The Gooodreads API, where API stands for Application Programming interface, which is basically a service they provide that can be called to retreive information.
+
+Goodreads is a social cataloging website that allows individuals to search freely its database of books, annotations, and reviews. For this assignment we are interested mainly in the reviews.
+
+The second source of data I use in this app comes from a Postgres database hosted on Heroku. Postgres or PostgreSQL is a free and open-source relational database management system and I hosted mine on Heroku, a cloud based platform as a service provider.
+
+Import
+Registration
+Login
+Search
+Book Page | Review Submission | Goodreads Review Data
+API Access
+Logout
+
+
+bertrand1982
+X5v4ADGuBN
+
+Pursuit of Honor	14
+Open House			12
+Midnight Tides		12
+Delirium			12
+American Assassin	11
+Falling Up			11
+Darke				10
+Chasing Darkness	10
