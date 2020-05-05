@@ -3,7 +3,6 @@ import os
 from secrets import key, secret
 
 import requests
-
 from flask import (Flask, Response, g, jsonify, make_response, redirect,
                    render_template, request, session, url_for)
 from flask_session import Session

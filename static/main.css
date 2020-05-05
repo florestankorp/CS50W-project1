@@ -6,13 +6,13 @@
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
     .container {
-        width: 50%;
+        width: 25%;
     }
 }
 
 @media only screen and (min-width: 1024px) and (max-width: 1366px) {
     .container {
-        width: 40%;
+        width: 25%;
     }
 }
 
@@ -25,6 +25,7 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
+    background-color: cornsilk;
 }
 
 h3, p {
@@ -45,6 +46,7 @@ form {
 }
 
 .user-review {
+    margin-bottom: 10px;
     padding: 10px;
 }
 
@@ -124,6 +126,7 @@ ul {
 .book-card {
     margin-bottom: 10px;
     padding: 10px;
+    background-color: lightblue;
 }
 
 .book-info {
@@ -151,7 +154,7 @@ a:hover {
 
 .button, input[type=submit] {
     width: 100%;
-    background-color: #4CAF50;
+    background-color: cornflowerblue;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
@@ -161,7 +164,7 @@ a:hover {
 }
 
 input[type=submit]:hover {
-    background-color: #45a049;
+    background-color: cornflowerblue;
 }
 
 .rounded-corners {

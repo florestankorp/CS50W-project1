@@ -27,7 +27,7 @@ $ pip3 install <module-name>
 
 In order to seed the database with data from `books.csv` run `import.py`
 
-> Note: For this to work you will have to set the environment variable from the next step, otherwise the script will not be able to connect to the database.
+> Note: For this to work you will have to configure your database and set the environment variable from the next step, otherwise the script will not be able to connect to the database.
 
 The following tables will be created:
 
@@ -40,7 +40,7 @@ After creating the tables the script will fill the database with the books. This
 
 ### Running the application
 
-This application makes use of the [Goodreads API](https://www.goodreads.com/api). As soon as you register a developer accout with Goodreads, you will get a `key` and `secret` with which you can perform the calls required to fetch the book review data required in this application.
+This application makes use of the [Goodreads API](https://www.goodreads.com/api). As soon as you register a developer account with Goodreads, you will get a `key` and `secret` with which you can perform the calls required to fetch the book review data required in this application.
 
 Make a file in your project called `secrets.py` and make two fields:
 

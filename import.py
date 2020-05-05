@@ -16,10 +16,10 @@ DB = scoped_session(sessionmaker(bind=engine))
 
 def main():
     DB.execute("""--sql
-    CREATE TABLE IF NOT EXISTS users (
-        user_id SERIAL PRIMARY KEY,
-        username VARCHAR(255),
-        password VARCHAR(255)
+CREATE TABLE IF NOT EXISTS users (
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR(255),
+    password VARCHAR(255)
     )--endsql""")
 
     # name has to be unique so there are no conflicts when inserting author_id into books table
@@ -39,12 +39,12 @@ def main():
     )--endsql""")
 
     DB.execute("""--sql
-    CREATE TABLE IF NOT EXISTS reviews (
-        review_id SERIAL PRIMARY KEY,
-        content TEXT,
-        rating INTEGER,
-        user_id INTEGER REFERENCES users,
-        book_id INTEGER REFERENCES books
+CREATE TABLE IF NOT EXISTS reviews (
+    review_id SERIAL PRIMARY KEY,
+    content TEXT,
+    rating INTEGER,
+    user_id INTEGER REFERENCES users,
+    book_id INTEGER REFERENCES books
     )--endsql""")
 
     print("created tables")
