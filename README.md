@@ -7,6 +7,8 @@ In this project, you’ll build a book review website. Users will be able to reg
 
 ## Usage
 
+The video that I made for this assignment can be found [here.](https://youtu.be/HIuPX8DEY-8) It describes the main functionality of this app.
+
 ### Requirements
 
 Make sure that you have [Python3, pip](https://docs.python.org/3/installing/index.html) and [Flask](https://flask.palletsprojects.com/en/1.1.x/installation/) installed and configured correctly.
